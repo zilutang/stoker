@@ -12,13 +12,16 @@ import time
 import datetime
 import numpy as np
 import os
+
+stocks = ts.get_stock_basics()
+
 '''
 beginDate = str(datetime.date.today() - datetime.timedelta(days=200)).replace('-', '/')
 endDate = str(datetime.date.today() - datetime.timedelta(days=2)).replace('-', '/')
 print beginDate
 print endDate
 
-stocks = ts.get_stock_basics()
+
 index = stocks.index.values
 
 alreadyGetFiles = []
@@ -62,13 +65,18 @@ allpdT1 = pd.read_csv("./resources/allCodepdT.csv", index_col=0)
 allpd1 = pd.read_csv("./resources/allCodepd.csv", index_col=0)
 columns = allpd1.index
 
-sortpd = pd.DataFrame(index=range(250))
+sortpd = pd.DataFrame(index=range(150))
 i = 0
-for column in columns[1:40]:
+for column in columns:
     i = i + 1
     print i
     col = (allpdT1[column]).sort_values(ascending=False).index
     if (str(col[0]) == "600000") : continue
-    print col[0]
-    sortpd = sortpd.join(pd.DataFrame(col, columns=[column]))
-    if i == 20: break
+    L1 = []
+    for code in col:
+        L1.append(stocks.at[str(code).zfill(6), "name"])
+    sortpd = sortpd.join(pd.DataFrame(L1, columns=[column]))
+    #if i == 20: break
+sortpd.to_csv("./resources/all.csv")
+
+#iconv -f utf-8 -t GBK all.csv > allbb.csv 转换编码让Excel可读
