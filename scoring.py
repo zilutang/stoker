@@ -31,28 +31,33 @@ codeList = list(codeSet)
 columns = allpd.columns
 newpd = pd.DataFrame(columns=columns)
 newpd = newpd.join(pd.DataFrame(columns=["name", "scoreToday"]))
-
+offset = 3
+D1 = -1 - offset
+D2 = -2 - offset
+D3 = -3 - offset
+D4 = -4 - offset
+D5 = -5 - offset
 for code in codeList:
     lineDict = dict()
     for column in columns:
         seriesInColumn = allpd[column]
         indexInColumn = seriesInColumn[seriesInColumn == code].index
         if not indexInColumn.empty:
-            lineDict.update({column:indexInColumn.values[0]})
+            lineDict.update({column:indexInColumn.values[0] + 1})
     lineDict.update({"name":code})
-    if lineDict.has_key(columns[-1]) and lineDict.has_key(columns[-2]) and lineDict.has_key(columns[-3]):
-        d1 = lineDict.get(columns[-1])
-        d2 = lineDict.get(columns[-2])
-        d3 = lineDict.get(columns[-3])
+    if lineDict.has_key(columns[D1]) and lineDict.has_key(columns[D2]) and lineDict.has_key(columns[D3]):
+        d1 = lineDict.get(columns[D1])
+        d2 = lineDict.get(columns[D2])
+        d3 = lineDict.get(columns[D3])
         if d1 <= d2 and d2 <= d3:
             lineDict.update({"scoreToday":"3"})
-            if lineDict.has_key(columns[-4]):
-                d4 = lineDict.get(columns[-4])
-                if d4 <= d3:
+            if lineDict.has_key(columns[D4]):
+                d4 = lineDict.get(columns[D4])
+                if d3 <= d4:
                     lineDict.update({"scoreToday":"4"})
-                    if lineDict.has_key(columns[-5]):
-                        d5 = lineDict.get(columns[-5])
-                        if d5 <= d4:
+                    if lineDict.has_key(columns[D5]):
+                        d5 = lineDict.get(columns[D5])
+                        if d4 <= d5:
                             lineDict.update({"scoreToday":"5"})
         
     else:
@@ -64,4 +69,4 @@ for code in codeList:
     
 newpd.to_csv("./resources/daily/score.csv")
 import commands
-commands.getstatusoutput("iconv -f utf-8 -t GBK ./resources/daily/score.csv > ./resources/daily/scoretoday.csv")
+commands.getstatusoutput("iconv -f utf-8 -t GBK ./resources/daily/score.csv > ./resources/daily/scoretoday-" + str(offset) + ".csv")
