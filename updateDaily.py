@@ -26,15 +26,16 @@ reload(sys)
 sys.setdefaultencoding( "utf-8" )
 
 todayDate = datetime.today()
-todayDateFormat = "{0}-{1}-{2}".format(todayDate.year, todayDate.month, todayDate.day)
+todayDateFormat0 = "{0}-{1}-{2}".format(todayDate.year, todayDate.month, todayDate.day)
+todayDateFormat = "{0}/{1}/{2}".format(todayDate.year, todayDate.month, todayDate.day)
 allpd = pd.read_csv("./resources/daily/all.csv", index_col=0)
 if todayDateFormat in allpd.columns.tolist():
     exit()
     
 stocks = ts.get_today_all()
-stocks.to_csv("./resources/daily/everyday/" + todayDateFormat + ".csv")
+stocks.to_csv("./resources/daily/everyday/" + todayDateFormat0 + ".csv")
     
-todaySortedPd = stocks[["name", "amount"]].sort_values(by="amount", ascending=False).reset_index()[["name"]]
+todaySortedPd = allpd[["name", "amount"]].sort_values(by="amount", ascending=False).reset_index()[["name"]]
 
 allpdToday = allpd.join(todaySortedPd.rename_axis({"name": todayDateFormat},axis=1))
 
