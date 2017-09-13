@@ -51,14 +51,14 @@ for code in codeList:
         d3 = lineDict.get(columns[D3])
         if d1 <= d2 and d2 <= d3:
             lineDict.update({"scoreToday":"3"})
-            if lineDict.has_key(columns[D4]):
-                d4 = lineDict.get(columns[D4])
-                if d3 <= d4:
-                    lineDict.update({"scoreToday":"4"})
-                    if lineDict.has_key(columns[D5]):
-                        d5 = lineDict.get(columns[D5])
-                        if d4 <= d5:
-                            lineDict.update({"scoreToday":"5"})
+        if lineDict.has_key("scoreToday") and lineDict.has_key(columns[D4]):
+            d4 = lineDict.get(columns[D4])
+            if d3 <= d4:
+                lineDict.update({"scoreToday":"4"})
+        if lineDict.has_key(columns[D5]) and lineDict.get("scoreToday") == 4:
+            d5 = lineDict.get(columns[D5])
+            if d4 <= d5:
+                lineDict.update({"scoreToday":"5"})
         
     else:
         pass
