@@ -24,6 +24,7 @@ from tgrocery import Grocery
 import sys
 reload(sys) 
 sys.setdefaultencoding( "utf-8" )
+os.chdir("/data/codes/stoker")
 
 todayDate = datetime.today()
 todayDateFormat0 = "{0}-{1}-{2}".format(todayDate.year, todayDate.month, todayDate.day)
@@ -35,7 +36,7 @@ if todayDateFormat in allpd.columns.tolist():
 stocks = ts.get_today_all()
 stocks.to_csv("./resources/daily/everyday/" + todayDateFormat0 + ".csv")
     
-todaySortedPd = allpd[["name", "amount"]].sort_values(by="amount", ascending=False).reset_index()[["name"]]
+todaySortedPd = stocks[["name", "amount"]].sort_values(by="amount", ascending=False).reset_index()[["name"]]
 
 allpdToday = allpd.join(todaySortedPd.rename_axis({"name": todayDateFormat},axis=1))
 

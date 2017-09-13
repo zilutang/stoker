@@ -21,5 +21,5 @@ todayScoreNewpd = todayScorepd[[todayColumn, "name", "scoreToday"]]
 todayScoreNewpd.to_csv("/data/codes/stoker/resources/daily/score.txt")
 
 #todayScoreText = todayScoreText.
-commands.getstatusoutput('/data/codes/stoker/resources/daily/sending.sh')
+#commands.getstatusoutput('/data/codes/stoker/resources/daily/sending.sh')
 #os.popen('echo "This is with attach" | mail -s "subject" 184083376@qq.com -A /data/codes/stoker/resources/daily/score.txt')

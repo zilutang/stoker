@@ -14,7 +14,7 @@ import numpy as np
 import os
 import sys
 #exit()
-
+os.chdir("/data/codes/stoker")
 print "hello"
 allpd = pd.read_csv("./resources/daily/all.csv", index_col=0)
 
