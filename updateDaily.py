@@ -44,4 +44,5 @@ allpdToday.to_csv("./resources/daily/all.csv")
 
 import commands
 commands.getstatusoutput("iconv -f utf-8 -t GBK ./resources/daily/all.csv > ./resources/daily/alltoday.csv")
+commands.getstatusoutput("cp ./resources/daily/alltoday.csv ./resources/daily/alltoday.txt")
 #iconv -f utf-8 -t GBK all.csv > allbb.csv 转换编码让Excel可读

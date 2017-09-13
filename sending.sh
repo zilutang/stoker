@@ -3,3 +3,4 @@ python /data/codes/stoker/scoring.py
 python /data/codes/stoker/mail.py
 
 echo "scoring for stocks" | mail -s "subject" 184083376@qq.com -A /data/codes/stoker/resources/daily/score.txt
+echo "scoring for stocks" | mail -s "subject" 184083376@qq.com -A /data/codes/stoker/resources/daily/alltoday.xlsx

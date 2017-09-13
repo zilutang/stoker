@@ -19,7 +19,8 @@ todayColumn = todayScorepd.columns[0]
 todayScorepd = todayScorepd.sort_values(by=todayColumn, ascending=True).reset_index()
 todayScoreNewpd = todayScorepd[[todayColumn, "name", "scoreToday"]]
 todayScoreNewpd.to_csv("/data/codes/stoker/resources/daily/score.txt")
-
+all = pd.read_csv("/data/codes/stoker/resources/daily/all.csv")
+all.to_excel("/data/codes/stoker/resources/daily/alltoday.xlsx")
 #todayScoreText = todayScoreText.
 #commands.getstatusoutput('/data/codes/stoker/resources/daily/sending.sh')
 #os.popen('echo "This is with attach" | mail -s "subject" 184083376@qq.com -A /data/codes/stoker/resources/daily/score.txt')
