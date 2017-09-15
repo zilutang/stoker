@@ -86,6 +86,20 @@ def send_mail(to_list,sub):
     att3["Content-Disposition"] = 'attachment; filename="all-today.xls"'
     message.attach(att3)
 
+    # 构造附件4，传送当前目录下的 test.txt 文件
+    att4 = MIMEText(open("/data/codes/stoker/resources/daily/filterpdSplitSortDateGBK.txt", 'rb').read(), 'base64', 'utf-8')
+    att4["Content-Type"] = 'application/octet-stream'
+    # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
+    att4["Content-Disposition"] = 'attachment; filename="filterpdSplitSortDateGBK.txt"'
+    message.attach(att4)
+    
+    # 构造附件5，传送当前目录下的 test.txt 文件
+    att5 = MIMEText(open("/data/codes/stoker/resources/daily/filterpdSplitSortNameGBK.txt", 'rb').read(), 'base64', 'utf-8')
+    att5["Content-Type"] = 'application/octet-stream'
+    # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
+    att5["Content-Disposition"] = 'attachment; filename="filterpdSplitSortNameGBK.txt"'
+    message.attach(att5)
+
     try:
         server = smtplib.SMTP()
         server.connect(mail_host)                            #连接服务器
