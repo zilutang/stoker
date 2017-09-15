@@ -17,7 +17,7 @@ import commands
 #exit()
 
 os.chdir("/data/codes/stoker")
-'''
+
 print "hello"
 allpd = pd.read_csv("./resources/daily/score.csv", index_col=0)
 se1 = allpd.iloc[0]
@@ -64,7 +64,7 @@ for i in allpdindex:
 allpdScoreHistory.to_csv("./resources/daily/allpdScoreHistory.csv")
 commands.getstatusoutput("iconv -f utf-8 -t GBK ./resources/daily/allpdScoreHistory.csv > ./resources/daily/allpdScoreHistoryGBK.csv")
 
-'''
+
 allpdScoreHistory = pd.read_csv("./resources/daily/allpdScoreHistory.csv")
 allpdScoreHistoryIndex = allpdScoreHistory.index
 filterResult = []
