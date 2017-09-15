@@ -1,5 +1,5 @@
-python /data/codes/stoker/updateDaily.py
-python /data/codes/stoker/scoring.py
-python /data/codes/stoker/mail.py
+/opt/anaconda2/anaconda/bin/python /data/codes/stoker/updateDaily.py
+/opt/anaconda2/anaconda/bin/python /data/codes/stoker/scoring.py
+/opt/anaconda2/anaconda/bin/python /data/codes/stoker/mail.py
 
-echo "今日打分，2017每日评分，每日排名" | mail -s "股票智能评分系统" 184083376@qq.com -A /data/codes/stoker/resources/daily/score.xlsx -A /data/codes/stoker/resources/daily/score.txt -A /data/codes/stoker/resources/daily/alltoday.xlsx
+echo "scoring" | mail -s "score system" 184083376@qq.com -A /data/codes/stoker/resources/daily/score1-today.xls -A /data/codes/stoker/resources/daily/score.txt -A /data/codes/stoker/resources/daily/all-today.xls

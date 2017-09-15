@@ -31,7 +31,7 @@ codeList = list(codeSet)
 columns = allpd.columns
 newpd = pd.DataFrame(columns=columns)
 newpd = newpd.join(pd.DataFrame(columns=["name", "scoreToday"]))
-offset = 0
+offset = 1
 D1 = -1 - offset
 D2 = -2 - offset
 D3 = -3 - offset
@@ -39,7 +39,8 @@ D4 = -4 - offset
 D5 = -5 - offset
 for code in codeList:
     lineDict = dict()
-    for column in columns:
+    lineScoreDict = dict()
+    for column in columns: #从原始总的排序文件中，按列取出当前code的排名，并依据最后5天的情况，算出一个当天的score
         seriesInColumn = allpd[column]
         indexInColumn = seriesInColumn[seriesInColumn == code].index
         if not indexInColumn.empty:
