@@ -19,12 +19,17 @@ print "hello"
 allpd = pd.read_csv("./resources/daily/score.csv", index_col=0)
 se1 = allpd.iloc[0]
 allpdindex = allpd.index
-for i in allpdindex[4:5]:
+allpdScoreHistory = pd.DataFrame(columns=allpd.columns)
+for i in allpdindex:
+    print i
     lineDict = dict()
     line = allpd.iloc[i]
     j = len(line) - 3
-    while j >= 0:
-        if (line[j].astype(str) == 'nan' and line[j-1].astype(str) == 'nan' and line[j-2].astype(str) == 'nan'): 
+    while j -2 >= 0:
+        if (line[j].astype(str) == 'nan' and line[j-1].astype(str) == 'nan' and line[j-2].astype(str) == 'nan'):
+            line[j - 1] = np.nan
+            line[j - 2] = np.nan
+            line[j] = np.nan
             j = j - 3
             continue
         elif (line[j - 4] >= line[j - 3] >= line[j - 2] >= line[j - 1] >= line[j]):
@@ -51,7 +56,8 @@ for i in allpdindex[4:5]:
         else:
             line[j] = np.nan
             j = j - 1
+    allpdScoreHistory = allpdScoreHistory.append(line)
         
-        
-        
+allpdScoreHistory.to_csv("./allpdScoreHistory.csv")
+commands.getstatusoutput("iconv -f utf-8 -t GBK ./resources/daily/allpdScoreHistory.csv > ./resources/daily/allpdScoreHistoryGBK.csv")
 
