@@ -17,7 +17,7 @@ import commands
 #exit()
 
 os.chdir("/data/codes/stoker")
-
+'''
 print "hello"
 allpd = pd.read_csv("./resources/daily/score.csv", index_col=0)
 se1 = allpd.iloc[0]
@@ -64,20 +64,22 @@ for i in allpdindex:
 allpdScoreHistory.to_csv("./resources/daily/allpdScoreHistory.csv")
 commands.getstatusoutput("iconv -f utf-8 -t GBK ./resources/daily/allpdScoreHistory.csv > ./resources/daily/allpdScoreHistoryGBK.csv")
 
-
+'''
 allpdScoreHistory = pd.read_csv("./resources/daily/allpdScoreHistory.csv")
 allpdScoreHistoryIndex = allpdScoreHistory.index
 filterResult = []
 for i in allpdScoreHistoryIndex:
-    lineFilter = allpdScoreHistory.iloc[i][:-2].str.contains("5/")
+    lineFilter = allpdScoreHistory.iloc[i][:-2].str.contains("4/")
+    countOfName = 0
     for ii in lineFilter.index:
         if str(lineFilter[ii]) == "True":
-            result = ii + " " + allpdScoreHistory.iloc[i][ii] + " " + allpdScoreHistory.iloc[i]["name"]
+            countOfName = countOfName + 1
+            result = ii + " " + allpdScoreHistory.iloc[i][ii] + " " + str(countOfName) + " " + allpdScoreHistory.iloc[i]["name"]
             print result
             filterResult.append(result)
     
 filterpd = pd.DataFrame(filterResult) 
-filterpdSplit = pd.DataFrame(filterpd[0].str.split(' ', 2).tolist(),columns = ['date','score', 'name'])
+filterpdSplit = pd.DataFrame(filterpd[0].str.split(' ', 3).tolist(),columns = ['date','score', 'count', 'name'])
 filterpdSplit.sort_values(["date"], ascending=False).to_csv("./resources/daily/filterpdSplitSortDate.csv")
 filterpdSplit.sort_values(["name"]).to_csv("./resources/daily/filterpdSplitSortName.csv")
 
