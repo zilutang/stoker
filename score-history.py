@@ -16,7 +16,8 @@ import sys
 import commands
 import xlwt
 import csv
-
+#score.csv-->allpdScoreHistory.csv
+#allpdScoreHistory.csv-->filterpdSplitSortDate.csv(filterpdSplitSortDate-today.xls*),filterpdSplitSortName.csv(filterpdSplitSortName-today.xls*)
 #exit()
 def csv_to_xls(filename):
     myexcel = xlwt.Workbook(encoding = 'utf-8')
@@ -105,8 +106,8 @@ filterpd = pd.DataFrame(filterResult)
 filterpdSplit = pd.DataFrame(filterpd[0].str.split(' ', 3).tolist(),columns = ['date','score', 'count', 'name'])
 filterpdSplit["count"] = filterpdSplit["count"].astype(int)
 filterpdSplit["date"] = pd.to_datetime(filterpdSplit['date'])
-filterpdSplit.sort_values(["date"], ascending=False).to_csv("./resources/daily/filterpdSplitSortDate.csv")
-filterpdSplit.sort_values(["name", "count"]).to_csv("./resources/daily/filterpdSplitSortName.csv")
+filterpdSplit.sort_values(["date"], ascending=False).reset_index()[['date','score', 'count', 'name']].to_csv("./resources/daily/filterpdSplitSortDate.csv")
+filterpdSplit.sort_values(["name", "count"]).reset_index()[['date','score', 'count', 'name']].to_csv("./resources/daily/filterpdSplitSortName.csv")
 
 commands.getstatusoutput("iconv -f utf-8 -t GBK ./resources/daily/filterpdSplitSortDate.csv > ./resources/daily/filterpdSplitSortDateGBK.txt")
 commands.getstatusoutput("iconv -f utf-8 -t GBK ./resources/daily/filterpdSplitSortName.csv > ./resources/daily/filterpdSplitSortNameGBK.txt")

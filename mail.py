@@ -19,6 +19,9 @@ import xlwt
 import csv
 import uuid
 #exit()
+#score.csv-->score.txt(today-sort.txt),score1.csv,(score.txt*)
+#score1.csv-->score1-today.xls*
+#all.csv-->all-today.xls*
 
 #添加附件发送/
 alltodaypd = pd.read_csv("/data/codes/stoker/resources/daily/score.csv")

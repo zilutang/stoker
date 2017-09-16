@@ -13,6 +13,7 @@ from datetime import datetime
 import numpy as np
 import os
 import sys
+#all.csv-->score.csv
 #exit()
 os.chdir("/data/codes/stoker")
 print "hello"
