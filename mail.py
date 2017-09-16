@@ -4,6 +4,11 @@
 Created on Wed Sep 13 09:40:13 2017
 
 @author: tangzilu
+1.generateBasic.py 生成基本数据文件
+2.updateDaily.py 基于基本数据文件每天更新当天数据
+3.scoring.py 对当天及前5天内更新过数据的个股进行打分
+4.score-history.py 对个股历史数据进行打分
+5.mail.py 将数据处理结果发邮件，并附带处理结果附件
 """
 
 import commands

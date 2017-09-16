@@ -30,7 +30,7 @@ todayDate = datetime.today()
 todayDateFormat0 = "{0}-{1}-{2}".format(todayDate.year, todayDate.month, todayDate.day)
 todayDateFormat = "{0}/{1}/{2}".format(todayDate.year, todayDate.month, todayDate.day)
 allpd = pd.read_csv("./resources/daily/all.csv", index_col=0)
-needupdate = 1
+needupdate = 0
 if todayDateFormat in allpd.columns.tolist():
     if not needupdate == 1:
         exit()

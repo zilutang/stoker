@@ -12,6 +12,7 @@ import time
 import datetime
 #record = ts.get_h_data('002337', start='2015-01-01', end='2015-03-16') 
 #print record
+exit()
 
 '''----------date tool
 beginDate = datetime.date.today() - datetime.timedelta(days=200)
@@ -58,7 +59,7 @@ try:
 except smtplib.SMTPException:
     print "Error: 无法发送邮件"
 '''
-
+'''
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -104,3 +105,4 @@ for i in range(1):                             #发送五封，不过会被拦�
         print "done!"
     else:
         print "failed!"
+'''
