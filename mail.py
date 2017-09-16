@@ -92,17 +92,17 @@ def send_mail(to_list,sub):
     message.attach(att3)
 
     # 构造附件4，传送当前目录下的 test.txt 文件
-    att4 = MIMEText(open("/data/codes/stoker/resources/daily/filterpdSplitSortDateGBK.txt", 'rb').read(), 'base64', 'utf-8')
+    att4 = MIMEText(open("/data/codes/stoker/resources/daily/filterpdSplitSortDate-today.xls", 'rb').read(), 'base64', 'utf-8')
     att4["Content-Type"] = 'application/octet-stream'
     # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
-    att4["Content-Disposition"] = 'attachment; filename="filterpdSplitSortDateGBK.txt"'
+    att4["Content-Disposition"] = 'attachment; filename="filterpdSplitSortDate-today.xls"'
     message.attach(att4)
     
     # 构造附件5，传送当前目录下的 test.txt 文件
-    att5 = MIMEText(open("/data/codes/stoker/resources/daily/filterpdSplitSortNameGBK.txt", 'rb').read(), 'base64', 'utf-8')
+    att5 = MIMEText(open("/data/codes/stoker/resources/daily/filterpdSplitSortName-today.xls", 'rb').read(), 'base64', 'utf-8')
     att5["Content-Type"] = 'application/octet-stream'
     # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
-    att5["Content-Disposition"] = 'attachment; filename="filterpdSplitSortNameGBK.txt"'
+    att5["Content-Disposition"] = 'attachment; filename="filterpdSplitSortName-today.xls"'
     message.attach(att5)
 
     try:

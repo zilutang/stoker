@@ -31,7 +31,7 @@ codeList = list(codeSet)
 columns = allpd.columns
 newpd = pd.DataFrame(columns=columns)
 newpd = newpd.join(pd.DataFrame(columns=["name", "scoreToday"]))
-offset = 1
+offset = 0
 D1 = -1 - offset
 D2 = -2 - offset
 D3 = -3 - offset
