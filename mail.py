@@ -29,6 +29,9 @@ todayScorepd = alltodaypd[alltodaypd.columns[-3:]]
 todayColumn = todayScorepd.columns[0]
 todayScorepd = todayScorepd.sort_values(by=todayColumn, ascending=True).reset_index()
 todayScoreNewpd = todayScorepd[[todayColumn, "name", "scoreToday"]]
+todayScoreNewpd.index.name = todayColumn;
+todayScoreNewpd.index= range(1,len(todayScoreNewpd.index) + 1)
+del todayScoreNewpd[todayColumn]
 todayScoreNewpd.to_csv("/data/codes/stoker/resources/daily/score.txt")
 
 reload(sys)
@@ -54,7 +57,7 @@ def csv_to_xls(filename):
 
 csv_to_xls("/data/codes/stoker/resources/daily/all.csv")
 csv_to_xls("/data/codes/stoker/resources/daily/score1.csv")
-
+csv_to_xls("/data/codes/stoker/resources/daily/score.txt")
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -73,28 +76,17 @@ def send_mail(to_list,sub):
     message['Subject'] = sub
 
     #邮件正文内容
-    message.attach(MIMEText('雪球趋势-今日榜单', 'plain', 'utf-8'))
-    # 构造附件1，传送当前目录下的 test.txt 文件
-    att1 = MIMEText(open("/data/codes/stoker/resources/daily/score1-today.xls", 'rb').read(), 'base64', 'utf-8')
-    att1["Content-Type"] = 'application/octet-stream'
-    # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
-    att1["Content-Disposition"] = 'attachment; filename="all-history-score.xls"'
-    message.attach(att1)
+    messageContent = '''
+    雪球趋势-今日榜单
+    说明：
+        score-today-by-date.xls 包括所有拥有评分资格的个股的历史评分-按日期排名
+        score-today-by-name.xls 包括所有拥有评分资格的个股的历史评分-按名称排名    
+        all-history-score.xls 包括所有个股的历史评分
+        score-today.xls 包括按成交额排名的今日个股评分
+        all-history-sort.xls 包括所有个股的历史成交额排名
+    '''
+    message.attach(MIMEText(messageContent, 'plain', 'utf-8'))
     
-    # 构造附件2，传送当前目录下的 test.txt 文件
-    att2 = MIMEText(open("/data/codes/stoker/resources/daily/score.txt", 'rb').read(), 'base64', 'utf-8')
-    att2["Content-Type"] = 'application/octet-stream'
-    # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
-    att2["Content-Disposition"] = 'attachment; filename="today-sort.txt"'
-    message.attach(att2)
-    
-    # 构造附件3，传送当前目录下的 test.txt 文件
-    att3 = MIMEText(open("/data/codes/stoker/resources/daily/all-today.xls", 'rb').read(), 'base64', 'utf-8')
-    att3["Content-Type"] = 'application/octet-stream'
-    # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
-    att3["Content-Disposition"] = 'attachment; filename="all-history-sort.xls"'
-    message.attach(att3)
-
     # 构造附件4，传送当前目录下的 test.txt 文件
     att4 = MIMEText(open("/data/codes/stoker/resources/daily/filterpdSplitSortDate-today.xls", 'rb').read(), 'base64', 'utf-8')
     att4["Content-Type"] = 'application/octet-stream'
@@ -108,6 +100,29 @@ def send_mail(to_list,sub):
     # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
     att5["Content-Disposition"] = 'attachment; filename="score-today-by-name.xls"'
     message.attach(att5)
+    
+    # 构造附件1，传送当前目录下的 test.txt 文件
+    att1 = MIMEText(open("/data/codes/stoker/resources/daily/score1-today.xls", 'rb').read(), 'base64', 'utf-8')
+    att1["Content-Type"] = 'application/octet-stream'
+    # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
+    att1["Content-Disposition"] = 'attachment; filename="all-history-score.xls"'
+    message.attach(att1)
+    
+    # 构造附件2，传送当前目录下的 test.txt 文件
+    att2 = MIMEText(open("/data/codes/stoker/resources/daily/score-today.xls", 'rb').read(), 'base64', 'utf-8')
+    att2["Content-Type"] = 'application/octet-stream'
+    # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
+    att2["Content-Disposition"] = 'attachment; filename="score-today.xls"'
+    message.attach(att2)
+    
+    # 构造附件3，传送当前目录下的 test.txt 文件
+    att3 = MIMEText(open("/data/codes/stoker/resources/daily/all-today.xls", 'rb').read(), 'base64', 'utf-8')
+    att3["Content-Type"] = 'application/octet-stream'
+    # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
+    att3["Content-Disposition"] = 'attachment; filename="all-history-sort.xls"'
+    message.attach(att3)
+
+    
 
     try:
         server = smtplib.SMTP()
