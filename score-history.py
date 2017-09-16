@@ -104,6 +104,7 @@ for i in allpdScoreHistoryIndex:
 filterpd = pd.DataFrame(filterResult) 
 filterpdSplit = pd.DataFrame(filterpd[0].str.split(' ', 3).tolist(),columns = ['date','score', 'count', 'name'])
 filterpdSplit["count"] = filterpdSplit["count"].astype(int)
+filterpdSplit["date"] = pd.to_datetime(filterpdSplit['date'])
 filterpdSplit.sort_values(["date"], ascending=False).to_csv("./resources/daily/filterpdSplitSortDate.csv")
 filterpdSplit.sort_values(["name", "count"]).to_csv("./resources/daily/filterpdSplitSortName.csv")
 

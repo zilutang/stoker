@@ -17,6 +17,7 @@ import os
 import sys
 import xlwt
 import csv
+import uuid
 #exit()
 
 #添加附件发送/
@@ -31,7 +32,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 scorepd = pd.read_csv("/data/codes/stoker/resources/daily/score.csv")
 scorepd = scorepd.sort_values(by=todayColumn, ascending=True).reset_index()
-scorepd.to_csv("/data/codes/stoker/resources/daily/score1.csv")
+scorepd[scorepd.columns[2:]].to_csv("/data/codes/stoker/resources/daily/score1.csv")
 def csv_to_xls(filename):
     myexcel = xlwt.Workbook(encoding = 'utf-8')
     mysheet = myexcel.add_sheet("sheet1")
@@ -69,40 +70,40 @@ def send_mail(to_list,sub):
     message['Subject'] = sub
 
     #邮件正文内容
-    message.attach(MIMEText('测试内容', 'plain', 'utf-8'))
+    message.attach(MIMEText('雪球趋势-今日榜单', 'plain', 'utf-8'))
     # 构造附件1，传送当前目录下的 test.txt 文件
     att1 = MIMEText(open("/data/codes/stoker/resources/daily/score1-today.xls", 'rb').read(), 'base64', 'utf-8')
     att1["Content-Type"] = 'application/octet-stream'
     # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
-    att1["Content-Disposition"] = 'attachment; filename="score1-today.xls"'
+    att1["Content-Disposition"] = 'attachment; filename="all-history-score.xls"'
     message.attach(att1)
     
     # 构造附件2，传送当前目录下的 test.txt 文件
     att2 = MIMEText(open("/data/codes/stoker/resources/daily/score.txt", 'rb').read(), 'base64', 'utf-8')
     att2["Content-Type"] = 'application/octet-stream'
     # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
-    att2["Content-Disposition"] = 'attachment; filename="score.txt"'
+    att2["Content-Disposition"] = 'attachment; filename="today-sort.txt"'
     message.attach(att2)
     
     # 构造附件3，传送当前目录下的 test.txt 文件
     att3 = MIMEText(open("/data/codes/stoker/resources/daily/all-today.xls", 'rb').read(), 'base64', 'utf-8')
     att3["Content-Type"] = 'application/octet-stream'
     # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
-    att3["Content-Disposition"] = 'attachment; filename="all-today.xls"'
+    att3["Content-Disposition"] = 'attachment; filename="all-history-sort.xls"'
     message.attach(att3)
 
     # 构造附件4，传送当前目录下的 test.txt 文件
     att4 = MIMEText(open("/data/codes/stoker/resources/daily/filterpdSplitSortDate-today.xls", 'rb').read(), 'base64', 'utf-8')
     att4["Content-Type"] = 'application/octet-stream'
     # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
-    att4["Content-Disposition"] = 'attachment; filename="filterpdSplitSortDate-today.xls"'
+    att4["Content-Disposition"] = 'attachment; filename="score-today-by-date.xls"'
     message.attach(att4)
     
     # 构造附件5，传送当前目录下的 test.txt 文件
     att5 = MIMEText(open("/data/codes/stoker/resources/daily/filterpdSplitSortName-today.xls", 'rb').read(), 'base64', 'utf-8')
     att5["Content-Type"] = 'application/octet-stream'
     # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
-    att5["Content-Disposition"] = 'attachment; filename="filterpdSplitSortName-today.xls"'
+    att5["Content-Disposition"] = 'attachment; filename="score-today-by-name.xls"'
     message.attach(att5)
 
     try:
@@ -116,7 +117,7 @@ def send_mail(to_list,sub):
         print str(e)
         return False
 for i in range(1):                             #发送五封，不过会被拦截的。。。
-    if send_mail(mailto_list,"hello"):  #邮件主题和邮件内容
+    if send_mail(mailto_list,todayColumn + "-score-" + str(uuid.uuid4())):  #邮件主题和邮件内容
         print "done!"
     else:
         print "failed!"
