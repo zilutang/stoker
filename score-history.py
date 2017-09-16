@@ -19,6 +19,7 @@ import csv
 #score.csv-->allpdScoreHistory.csv
 #allpdScoreHistory.csv-->filterpdSplitSortDate.csv(filterpdSplitSortDate-today.xls*),filterpdSplitSortName.csv(filterpdSplitSortName-today.xls*)
 #fly, climb, rank; strong=climb/rank; rocket=strong/rank
+#关注rocket排名靠前的个股，第二次rank再次靠前时，并且有MACD的机会，是绝佳进场机会
 #exit()
 def csv_to_xls(filename):
     myexcel = xlwt.Workbook(encoding = 'utf-8')
