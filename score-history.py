@@ -18,6 +18,7 @@ import xlwt
 import csv
 #score.csv-->allpdScoreHistory.csv
 #allpdScoreHistory.csv-->filterpdSplitSortDate.csv(filterpdSplitSortDate-today.xls*),filterpdSplitSortName.csv(filterpdSplitSortName-today.xls*)
+#fly, climb, rank; strong=climb/rank; rocket=strong/rank
 #exit()
 def csv_to_xls(filename):
     myexcel = xlwt.Workbook(encoding = 'utf-8')
