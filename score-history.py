@@ -20,6 +20,7 @@ import csv
 #allpdScoreHistory.csv-->filterpdSplitSortDate.csv(filterpdSplitSortDate-today.xls*),filterpdSplitSortName.csv(filterpdSplitSortName-today.xls*)
 #fly, climb, rank; strong=climb/rank; rocket=strong/rank
 #关注rocket排名靠前的个股，第二次rank再次靠前时，并且有MACD的机会，是绝佳进场机会
+#rocket字段定义了rocket算法大于10的个股出现的日期和数值，拥有值的个股再次出现fly排行榜中，并且MACD金叉时，是绝佳买入机会
 #exit()
 def csv_to_xls(filename):
     myexcel = xlwt.Workbook(encoding = 'utf-8')
@@ -100,16 +101,28 @@ for i in allpdScoreHistoryIndex:
     for ii in lineFilter.index:
         if str(lineFilter[ii]) == "True":
             countOfName = countOfName + 1
-            result = ii + " " + allpdScoreHistory.iloc[i][ii] + " " + str(countOfName) + " " + allpdScoreHistory.iloc[i]["name"]
-            #print result
-            filterResult.append(result)
+            score = allpdScoreHistory.iloc[i][ii]
+            scoreSplit = score.split("/")
+            scoreRocket = round(float(scoreSplit[1])/(float(scoreSplit[2]) * float(scoreSplit[2])), 2)
+            maxRocket = 10
+            if (scoreRocket > maxRocket):
+                maxRocket = scoreRocket
+            result = ii + " " + score + " " + str(countOfName) + " " + allpdScoreHistory.iloc[i]["name"]
+            
+            if (maxRocket == 10):
+                resultAndRocket = ii + " " + score + " " + str(countOfName) + " " + '--' + " " + allpdScoreHistory.iloc[i]["name"]
+            else:
+                resultAndRocket = ii + " " + score + " " + str(countOfName) + " " + str(maxRocket) + '-' + ii + " " + allpdScoreHistory.iloc[i]["name"]
+            
+            filterResult.append(resultAndRocket)
     
 filterpd = pd.DataFrame(filterResult) 
-filterpdSplit = pd.DataFrame(filterpd[0].str.split(' ', 3).tolist(),columns = ['date','score', 'count', 'name'])
+columnList = ['date','score', 'count', 'rocket', 'name']
+filterpdSplit = pd.DataFrame(filterpd[0].str.split(' ', len(columnList) - 1).tolist(),columns = columnList)
 filterpdSplit["count"] = filterpdSplit["count"].astype(int)
 filterpdSplit["date"] = pd.to_datetime(filterpdSplit['date'])
-filterpdSplit.sort_values(["date"], ascending=False).reset_index()[['date','score', 'count', 'name']].to_csv("./resources/daily/filterpdSplitSortDate.csv")
-filterpdSplit.sort_values(["name", "count"]).reset_index()[['date','score', 'count', 'name']].to_csv("./resources/daily/filterpdSplitSortName.csv")
+filterpdSplit.sort_values(["date"], ascending=False).reset_index()[columnList].to_csv("./resources/daily/filterpdSplitSortDate.csv")
+filterpdSplit.sort_values(["name", "count"]).reset_index()[columnList].to_csv("./resources/daily/filterpdSplitSortName.csv")
 
 commands.getstatusoutput("iconv -f utf-8 -t GBK ./resources/daily/filterpdSplitSortDate.csv > ./resources/daily/filterpdSplitSortDateGBK.txt")
 commands.getstatusoutput("iconv -f utf-8 -t GBK ./resources/daily/filterpdSplitSortName.csv > ./resources/daily/filterpdSplitSortNameGBK.txt")
