@@ -98,21 +98,24 @@ filterResult = []
 for i in allpdScoreHistoryIndex:
     lineFilter = allpdScoreHistory.iloc[i][:-2].str.contains("/")
     countOfName = 0
+    maxRocket = 10 
+    hasLargeRocket = False
     for ii in lineFilter.index:
         if str(lineFilter[ii]) == "True":
             countOfName = countOfName + 1
             score = allpdScoreHistory.iloc[i][ii]
             scoreSplit = score.split("/")
-            scoreRocket = round(float(scoreSplit[1])/(float(scoreSplit[2]) * float(scoreSplit[2])), 2)
-            maxRocket = 10
+            scoreRocket = round(float(scoreSplit[1])/(float(scoreSplit[2]) * float(scoreSplit[2])), 1)
             if (scoreRocket > maxRocket):
                 maxRocket = scoreRocket
-            result = ii + " " + score + " " + str(countOfName) + " " + allpdScoreHistory.iloc[i]["name"]
+                hasLargeRocket = True
+                rocketDate = ii
+            #result = ii + " " + score + " " + str(countOfName) + " " + allpdScoreHistory.iloc[i]["name"]
             
-            if (maxRocket == 10):
+            if (hasLargeRocket == False):
                 resultAndRocket = ii + " " + score + " " + str(countOfName) + " " + '--' + " " + allpdScoreHistory.iloc[i]["name"]
             else:
-                resultAndRocket = ii + " " + score + " " + str(countOfName) + " " + str(maxRocket) + '-' + ii + " " + allpdScoreHistory.iloc[i]["name"]
+                resultAndRocket = ii + " " + score + " " + str(countOfName) + " " + str(maxRocket) + '-' + rocketDate[3:] + " " + allpdScoreHistory.iloc[i]["name"]
             
             filterResult.append(resultAndRocket)
     
