@@ -91,7 +91,7 @@ for i in allpdindex:
 allpdScoreHistory.to_csv("./resources/daily/allpdScoreHistory.csv")
 commands.getstatusoutput("iconv -f utf-8 -t GBK ./resources/daily/allpdScoreHistory.csv > ./resources/daily/allpdScoreHistoryGBK.csv")
 
-
+nameWatching = ["亿纬锂能", "格林美"]
 allpdScoreHistory = pd.read_csv("./resources/daily/allpdScoreHistory.csv")
 allpdScoreHistoryIndex = allpdScoreHistory.index
 filterResult = []
@@ -100,6 +100,9 @@ for i in allpdScoreHistoryIndex:
     countOfName = 0
     maxRocket = 10 
     hasLargeRocket = False
+    name = allpdScoreHistory.iloc[i]["name"]
+    if name in nameWatching:
+        name = "* " + name
     for ii in lineFilter.index:
         if str(lineFilter[ii]) == "True":
             countOfName = countOfName + 1
@@ -113,9 +116,9 @@ for i in allpdScoreHistoryIndex:
             #result = ii + " " + score + " " + str(countOfName) + " " + allpdScoreHistory.iloc[i]["name"]
             
             if (hasLargeRocket == False):
-                resultAndRocket = ii + " " + score + " " + str(countOfName) + " " + "--" + " " + str(scoreRocket) + " " + allpdScoreHistory.iloc[i]["name"]
+                resultAndRocket = ii + " " + score + " " + str(countOfName) + " " + "--" + " " + str(scoreRocket) + " " + name
             else:
-                resultAndRocket = ii + " " + score + " " + str(countOfName) + " " + str(scoreRocket) + " " + str(maxRocket) + '-' + rocketDate[3:] + " " + allpdScoreHistory.iloc[i]["name"]
+                resultAndRocket = ii + " " + score + " " + str(countOfName) + " " + str(scoreRocket) + " " + str(maxRocket) + '-' + rocketDate[3:] + " " + name
             
             filterResult.append(resultAndRocket)
     
