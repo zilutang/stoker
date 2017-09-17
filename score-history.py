@@ -113,14 +113,14 @@ for i in allpdScoreHistoryIndex:
             #result = ii + " " + score + " " + str(countOfName) + " " + allpdScoreHistory.iloc[i]["name"]
             
             if (hasLargeRocket == False):
-                resultAndRocket = ii + " " + score + " " + str(countOfName) + " " + '--' + " " + allpdScoreHistory.iloc[i]["name"]
+                resultAndRocket = ii + " " + score + " " + str(countOfName) + " " + "--" + " " + str(scoreRocket) + " " + allpdScoreHistory.iloc[i]["name"]
             else:
-                resultAndRocket = ii + " " + score + " " + str(countOfName) + " " + str(maxRocket) + '-' + rocketDate[3:] + " " + allpdScoreHistory.iloc[i]["name"]
+                resultAndRocket = ii + " " + score + " " + str(countOfName) + " " + str(scoreRocket) + " " + str(maxRocket) + '-' + rocketDate[3:] + " " + allpdScoreHistory.iloc[i]["name"]
             
             filterResult.append(resultAndRocket)
     
 filterpd = pd.DataFrame(filterResult) 
-columnList = ['date','score', 'count', 'rocket', 'name']
+columnList = ['date','score', 'count', 'rocket', 'rocketMax', 'name']
 filterpdSplit = pd.DataFrame(filterpd[0].str.split(' ', len(columnList) - 1).tolist(),columns = columnList)
 filterpdSplit["count"] = filterpdSplit["count"].astype(int)
 filterpdSplit["date"] = pd.to_datetime(filterpdSplit['date'])
