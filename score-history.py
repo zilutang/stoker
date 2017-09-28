@@ -100,7 +100,7 @@ for i in allpdScoreHistoryIndex:
     countOfName = 0
     maxRocket = 10 
     hasLargeRocket = False
-    name = allpdScoreHistory.iloc[i]["name"]
+    name = allpdScoreHistory.iloc[i]["name"].replace(' ', '')
     if name in nameWatching:
         name = "* " + name
     for ii in lineFilter.index:
@@ -127,6 +127,21 @@ columnList = ['date','score', 'count', 'rocket', 'rocketMax', 'name']
 filterpdSplit = pd.DataFrame(filterpd[0].str.split(' ', len(columnList) - 1).tolist(),columns = columnList)
 filterpdSplit["count"] = filterpdSplit["count"].astype(int)
 filterpdSplit["date"] = pd.to_datetime(filterpdSplit['date'])
+
+climbMean=pd.DataFrame(filterpdSplit['score'].str.split('/').tolist(), index=filterpdSplit.date)[1]
+climbMeanpd=pd.DataFrame(climbMean)
+climbMeanpd.columns=['climbMean']
+climbMeanpd = climbMeanpd.astype(int)
+climbMeanDict = dict()
+climbMeanpdIndexList = list(set(climbMeanpd.index))
+for index in climbMeanpdIndexList:
+    climbMeanDict[index] = climbMeanpd[climbMeanpd.index==index].mean().round(2)
+
+climbMeanNewpd = pd.DataFrame(climbMeanDict).T
+newfilterpdSplit = filterpdSplit.join(climbMeanNewpd, how='left', on='date')
+
+columnList.append('climbMean')
+filterpdSplit = newfilterpdSplit
 filterpdSplit.sort_values(["date"], ascending=False).reset_index()[columnList].to_csv("./resources/daily/filterpdSplitSortDate.csv")
 filterpdSplit.sort_values(["name", "count"]).reset_index()[columnList].to_csv("./resources/daily/filterpdSplitSortName.csv")
 
