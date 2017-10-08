@@ -17,7 +17,10 @@ import sys
 #exit()
 os.chdir("/data/codes/stoker")
 print "hello"
-allpd = pd.read_csv("./resources/daily/all.csv", index_col=0)
+allDataFile = "./resources/daily/all.csv"
+filterpdSplitSortName2016 = "./resources/daily/2016/filterpdSplitSortName.csv"
+#allDataFile = "./resources/2016/all.csv"
+allpd = pd.read_csv(allDataFile, index_col=0)
 
 allpdTop10 = allpd[0:15]
 allpdTop10Set = allpdTop10.values

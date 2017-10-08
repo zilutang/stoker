@@ -88,14 +88,14 @@ def send_mail(to_list,sub):
     message.attach(MIMEText(messageContent, 'plain', 'utf-8'))
     
     # 构造附件4，传送当前目录下的 test.txt 文件
-    att4 = MIMEText(open("/data/codes/stoker/resources/daily/filterpdSplitSortDate-today.xls", 'rb').read(), 'base64', 'utf-8')
+    att4 = MIMEText(open("/data/codes/stoker/resources/daily/filterpdSplitSortDateWithGap-today.xls", 'rb').read(), 'base64', 'utf-8')
     att4["Content-Type"] = 'application/octet-stream'
     # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
     att4["Content-Disposition"] = 'attachment; filename="score-today-by-date.xls"'
     message.attach(att4)
     
     # 构造附件5，传送当前目录下的 test.txt 文件
-    att5 = MIMEText(open("/data/codes/stoker/resources/daily/filterpdSplitSortName-today.xls", 'rb').read(), 'base64', 'utf-8')
+    att5 = MIMEText(open("/data/codes/stoker/resources/daily/filterpdSplitSortNameWithGap-today.xls", 'rb').read(), 'base64', 'utf-8')
     att5["Content-Type"] = 'application/octet-stream'
     # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
     att5["Content-Disposition"] = 'attachment; filename="score-today-by-name.xls"'

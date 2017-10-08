@@ -91,7 +91,7 @@ for i in allpdindex:
 allpdScoreHistory.to_csv("./resources/daily/allpdScoreHistory.csv")
 commands.getstatusoutput("iconv -f utf-8 -t GBK ./resources/daily/allpdScoreHistory.csv > ./resources/daily/allpdScoreHistoryGBK.csv")
 
-nameWatching = ["亿纬锂能", "格林美"]
+nameWatching = []
 allpdScoreHistory = pd.read_csv("./resources/daily/allpdScoreHistory.csv")
 allpdScoreHistoryIndex = allpdScoreHistory.index
 filterResult = []
@@ -141,6 +141,7 @@ climbMeanNewpd = pd.DataFrame(climbMeanDict).T
 newfilterpdSplit = filterpdSplit.join(climbMeanNewpd, how='left', on='date')
 
 columnList.append('climbMean')
+#columnList.append('gap')
 filterpdSplit = newfilterpdSplit
 filterpdSplit.sort_values(["date"], ascending=False).reset_index()[columnList].to_csv("./resources/daily/filterpdSplitSortDate.csv")
 filterpdSplit.sort_values(["name", "count"]).reset_index()[columnList].to_csv("./resources/daily/filterpdSplitSortName.csv")
