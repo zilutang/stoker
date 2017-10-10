@@ -55,7 +55,7 @@ def csv_to_xls(filename):
     myexcel.save(excel_filename)
     return excel_filename
 
-csv_to_xls("/data/codes/stoker/resources/daily/all.csv")
+    csv_to_xls("/data/codes/stoker/resources/daily/all.csv")
 csv_to_xls("/data/codes/stoker/resources/daily/score1.csv")
 csv_to_xls("/data/codes/stoker/resources/daily/score.txt")
 import smtplib
@@ -87,6 +87,13 @@ def send_mail(to_list,sub):
     '''
     message.attach(MIMEText(messageContent, 'plain', 'utf-8'))
     
+    # 构造附件2，传送当前目录下的 test.txt 文件
+    att2 = MIMEText(open("/data/codes/stoker/resources/daily/filterpdSplitSortDateWithGapCount1-today.xls", 'rb').read(), 'base64', 'utf-8')
+    att2["Content-Type"] = 'application/octet-stream'
+    # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
+    att2["Content-Disposition"] = 'attachment; filename="Count1-till-today.xls"'
+    message.attach(att2)
+    
     # 构造附件4，传送当前目录下的 test.txt 文件
     att4 = MIMEText(open("/data/codes/stoker/resources/daily/filterpdSplitSortDateWithGap-today.xls", 'rb').read(), 'base64', 'utf-8')
     att4["Content-Type"] = 'application/octet-stream'
@@ -108,12 +115,7 @@ def send_mail(to_list,sub):
     att1["Content-Disposition"] = 'attachment; filename="all-history-score.xls"'
     message.attach(att1)
     
-    # 构造附件2，传送当前目录下的 test.txt 文件
-    att2 = MIMEText(open("/data/codes/stoker/resources/daily/score-today.xls", 'rb').read(), 'base64', 'utf-8')
-    att2["Content-Type"] = 'application/octet-stream'
-    # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
-    att2["Content-Disposition"] = 'attachment; filename="score-today.xls"'
-    message.attach(att2)
+    
     
     # 构造附件3，传送当前目录下的 test.txt 文件
     att3 = MIMEText(open("/data/codes/stoker/resources/daily/all-today.xls", 'rb').read(), 'base64', 'utf-8')
