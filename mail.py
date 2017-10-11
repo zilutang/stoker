@@ -55,7 +55,7 @@ def csv_to_xls(filename):
     myexcel.save(excel_filename)
     return excel_filename
 
-    csv_to_xls("/data/codes/stoker/resources/daily/all.csv")
+csv_to_xls("/data/codes/stoker/resources/daily/all.csv")
 csv_to_xls("/data/codes/stoker/resources/daily/score1.csv")
 csv_to_xls("/data/codes/stoker/resources/daily/score.txt")
 import smtplib
