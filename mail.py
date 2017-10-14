@@ -33,6 +33,24 @@ todayScoreNewpd.index.name = todayColumn;
 todayScoreNewpd.index= range(1,len(todayScoreNewpd.index) + 1)
 del todayScoreNewpd[todayColumn]
 todayScoreNewpd.to_csv("/data/codes/stoker/resources/daily/score.txt")
+filterpdSplitSortDateWithGap = pd.read_csv("/data/codes/stoker/resources/daily/filterpdSplitSortDateWithGap.csv")
+lines=filterpdSplitSortDateWithGap[filterpdSplitSortDateWithGap['date']==x[0]]
+linkString=""
+baseUrl = "http://finance.china.com.cn/stock/quote/"
+baseGdrsUrl = "http://stock.jrj.com.cn/share,%s,gdhs.shtml"
+zjBaseUrl = "http://vip.stock.finance.sina.com.cn/moneyflow/#!ssfx!"
+nameString = ""
+for line in lines['name']:
+    nameString += line + ','
+    code = dfpe[dfpe['name']==line].index[0]
+    if code[0] == '6':
+        linkString += line + ": " + baseUrl + "sh" + code + "\r\n"  
+        linkString += zjBaseUrl + "sh" + code + "\r\n"
+    else:
+        linkString += line + ": " + baseUrl + "sz" + code + "\r\n"
+        linkString += zjBaseUrl + "sz" + code + "\r\n"
+    linkString += baseGdrsUrl % code + "\r\n\r\n"
+
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -76,15 +94,21 @@ def send_mail(to_list,sub):
     message['Subject'] = sub
 
     #邮件正文内容
+    #1.http://finance.china.com.cn/stock/quote/sh600499
+    #2.http://stock.jrj.com.cn/share,002247,gdhs.shtml
+    #3.http://vip.stock.finance.sina.com.cn/moneyflow/#!ssfx!sz000725
     messageContent = '''
-    雪球趋势-今日榜单
-    说明：
-        score-today-by-date.xls 包括所有拥有评分资格的个股的历史评分-按日期排名
-        score-today-by-name.xls 包括所有拥有评分资格的个股的历史评分-按名称排名    
-        all-history-score.xls 包括所有个股的历史评分
-        score-today.xls 包括按成交额排名的今日个股评分
-        all-history-sort.xls 包括所有个股的历史成交额排名
-    '''
+雪球趋势-今日榜单
+说明：
+score-today-by-date.xls 包括所有拥有评分资格的个股的历史评分-按日期排名
+score-today-by-name.xls 包括所有拥有评分资格的个股的历史评分-按名称排名    
+all-history-score.xls 包括所有个股的历史评分
+score-today.xls 包括按成交额排名的今日个股评分
+all-history-sort.xls 包括所有个股的历史成交额排名\r\n\r\n
+资金榜单：
+http://vip.stock.finance.sina.com.cn/moneyflow/#zljlrepm\r\n\r\n'''
+
+    messageContent = messageContent + linkString
     message.attach(MIMEText(messageContent, 'plain', 'utf-8'))
     
     # 构造附件2，传送当前目录下的 test.txt 文件
@@ -137,7 +161,7 @@ def send_mail(to_list,sub):
         print str(e)
         return False
 for i in range(1):                             #发送五封，不过会被拦截的。。。
-    if send_mail(mailto_list,todayColumn + "-score-" + str(uuid.uuid4())):  #邮件主题和邮件内容
+    if send_mail(mailto_list,todayColumn[4:] + nameString):  #邮件主题和邮件内容
         print "done!"
     else:
         print "failed!"
