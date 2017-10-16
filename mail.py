@@ -25,6 +25,7 @@ import uuid
 
 #添加附件发送/
 alltodaypd = pd.read_csv("/data/codes/stoker/resources/daily/score.csv")
+dfpe = pd.read_csv('/data/codes/stoker/resources/daily/dfpe.csv')
 todayScorepd = alltodaypd[alltodaypd.columns[-3:]]
 todayColumn = todayScorepd.columns[0]
 todayScorepd = todayScorepd.sort_values(by=todayColumn, ascending=True).reset_index()
@@ -34,7 +35,7 @@ todayScoreNewpd.index= range(1,len(todayScoreNewpd.index) + 1)
 del todayScoreNewpd[todayColumn]
 todayScoreNewpd.to_csv("/data/codes/stoker/resources/daily/score.txt")
 filterpdSplitSortDateWithGap = pd.read_csv("/data/codes/stoker/resources/daily/filterpdSplitSortDateWithGap.csv")
-lines=filterpdSplitSortDateWithGap[filterpdSplitSortDateWithGap['date']==x[0]]
+lines=filterpdSplitSortDateWithGap[filterpdSplitSortDateWithGap['date']==filterpdSplitSortDateWithGap['date'][0]]
 linkString=""
 baseUrl = "http://finance.china.com.cn/stock/quote/"
 baseGdrsUrl = "http://stock.jrj.com.cn/share,%s,gdhs.shtml"
@@ -42,7 +43,7 @@ zjBaseUrl = "http://vip.stock.finance.sina.com.cn/moneyflow/#!ssfx!"
 nameString = ""
 for line in lines['name']:
     nameString += line + ','
-    code = dfpe[dfpe['name']==line].index[0]
+    code = str(dfpe[dfpe['name']==line]['code'].get_values()[0]).zfill(6)
     if code[0] == '6':
         linkString += line + ": " + baseUrl + "sh" + code + "\r\n"  
         linkString += zjBaseUrl + "sh" + code + "\r\n"
@@ -105,6 +106,12 @@ score-today-by-name.xls 包括所有拥有评分资格的个股的历史评分-�
 all-history-score.xls 包括所有个股的历史评分
 score-today.xls 包括按成交额排名的今日个股评分
 all-history-sort.xls 包括所有个股的历史成交额排名\r\n\r\n
+上证指数：
+http://finance.china.com.cn/stock/quote/sh000001/
+行业研究：
+http://app.finance.china.com.cn/report/list.php?type=1003
+http://data.eastmoney.com/report/hyyb.html
+http://stock.jrj.com.cn/yanbao/yanbaolist_hangye.shtml?dateInterval=30&orgCode=-1&xcfCode=-1
 资金榜单：
 http://vip.stock.finance.sina.com.cn/moneyflow/#zljlrepm\r\n\r\n'''
 
