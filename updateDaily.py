@@ -36,8 +36,17 @@ if todayDateFormat in allpd.columns.tolist():
         exit()
     else:
         del allpd[todayDateFormat]
-    
-stocks = ts.get_today_all()
+
+for i in range(4):
+    try:
+        stocks = ts.get_today_all()
+        break
+    except:
+        if i == 3:
+            exit(1)
+        else:
+            time.sleep(10)
+
 stocks.to_csv("./resources/daily/everyday/" + todayDateFormat0 + ".csv")
     
 todaySortedPd = stocks[["name", "amount"]].sort_values(by="amount", ascending=False).reset_index()[["name"]]

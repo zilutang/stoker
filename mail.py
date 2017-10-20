@@ -42,15 +42,18 @@ baseGdrsUrl = "http://stock.jrj.com.cn/share,%s,gdhs.shtml"
 zjBaseUrl = "http://vip.stock.finance.sina.com.cn/moneyflow/#!ssfx!"
 nameString = ""
 for line in lines['name']:
-    nameString += line + ','
-    code = str(dfpe[dfpe['name']==line]['code'].get_values()[0]).zfill(6)
-    if code[0] == '6':
-        linkString += line + ": " + baseUrl + "sh" + code + "\r\n"  
-        linkString += zjBaseUrl + "sh" + code + "\r\n"
-    else:
-        linkString += line + ": " + baseUrl + "sz" + code + "\r\n"
-        linkString += zjBaseUrl + "sz" + code + "\r\n"
-    linkString += baseGdrsUrl % code + "\r\n\r\n"
+    try:
+        nameString += line + ','
+        code = str(dfpe[dfpe['name']==line]['code'].get_values()[0]).zfill(6)
+        if code[0] == '6':
+            linkString += line + ": " + baseUrl + "sh" + code + "\r\n"  
+            linkString += zjBaseUrl + "sh" + code + "\r\n"
+        else:
+            linkString += line + ": " + baseUrl + "sz" + code + "\r\n"
+            linkString += zjBaseUrl + "sz" + code + "\r\n"
+        linkString += baseGdrsUrl % code + "\r\n\r\n"
+    except:
+        pass
 
 
 reload(sys)
@@ -83,9 +86,14 @@ from email.mime.multipart import MIMEMultipart
 from email.header import Header
 mailto_list=['184083376@qq.com']           #收件人(列表)
 mail_host="smtp.163.com"            #使用的邮箱的smtp服务器地址
-mail_user="weiminghu1984@163.com"                           #用户名
-mail_pass="uuru1gexnmima"                             #密码
-mail_postfix="postfix"                     #邮箱的后缀
+with open('mailuser.txt', 'r') as file_to_read:
+                while True:
+                    line = file_to_read.readline()
+                    if not line:
+                        break
+                        pass
+                    (mail_user, mail_pass) = line.split(',')
+mail_postfix="postfix"
 def send_mail(to_list,sub):
     me="hello"+"<"+mail_user+"@"+mail_postfix+">"
     message = MIMEMultipart()
