@@ -73,7 +73,9 @@ def csv_to_xls(filename):
             mysheet.write(l,r,i)
             r=r+1
         l=l+1
-    excel_filename = str(filename.split(".")[0]) + "-today.xls"
+    print filename
+    #excel_filename = str(filename.split(".")[0]) + "-today.xls"
+    excel_filename = filename.split(".")[0] + "-today.xls"
     myexcel.save(excel_filename)
     return excel_filename
 
@@ -86,6 +88,7 @@ from email.mime.multipart import MIMEMultipart
 from email.header import Header
 mailto_list=['184083376@qq.com']           #收件人(列表)
 mail_host="smtp.163.com"            #使用的邮箱的smtp服务器地址
+
 with open('mailuser.txt', 'r') as file_to_read:
                 while True:
                     line = file_to_read.readline()
@@ -93,6 +96,7 @@ with open('mailuser.txt', 'r') as file_to_read:
                         break
                         pass
                     (mail_user, mail_pass) = line.split(',')
+                    
 mail_postfix="postfix"
 def send_mail(to_list,sub):
     me="hello"+"<"+mail_user+"@"+mail_postfix+">"
