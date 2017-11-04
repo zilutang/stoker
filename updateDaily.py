@@ -59,3 +59,10 @@ import commands
 commands.getstatusoutput("iconv -f utf-8 -t GBK ./resources/daily/all.csv > ./resources/daily/alltoday.csv")
 commands.getstatusoutput("cp ./resources/daily/alltoday.csv ./resources/daily/alltoday.txt")
 #iconv -f utf-8 -t GBK all.csv > allbb.csv 转换编码让Excel可读
+
+'''---rename columns---
+os.chdir("/data/codes/stoker")
+allpd = pd.read_csv("./resources/daily/all.csv", index_col=0)
+allpd.columns = allpd.columns.str.replace('2017/11/4', '2017/11/3')
+allpd.to_csv("./resources/daily/all.csv")
+'''
