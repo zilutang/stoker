@@ -18,6 +18,7 @@ import sys
 import xlwt
 import csv
 import uuid
+from selenium import webdriver
 #exit()
 #score.csv-->score.txt(today-sort.txt),score1.csv,(score.txt*)
 #score1.csv-->score1-today.xls*
@@ -41,10 +42,25 @@ baseUrl = "http://finance.china.com.cn/stock/quote/"
 baseGdrsUrl = "http://stock.jrj.com.cn/share,%s,gdhs.shtml"
 zjBaseUrl = "http://vip.stock.finance.sina.com.cn/moneyflow/#!ssfx!"
 nameString = ""
+brower = webdriver.PhantomJS()
+
+def saveGdrsPic(code):
+    url = 'http://stock.jrj.com.cn/share,%s,gdhs.shtml' % code
+    global brower
+    brower.get(url)
+    brower.maximize_window()
+    brower.save_screenshot('./pics/%s.jpg' % code)
+    print "got pic code %s" % code
+    
+
+codeList = []
 for line in lines['name']:
     try:
         nameString += line + ','
         code = str(dfpe[dfpe['name']==line]['code'].get_values()[0]).zfill(6)
+        codeList.append(code)
+        saveGdrsPic(code)
+        
         if code[0] == '6':
             linkString += line + ": " + baseUrl + "sh" + code + "\r\n"  
             linkString += zjBaseUrl + "sh" + code + "\r\n"
@@ -55,6 +71,7 @@ for line in lines['name']:
     except:
         pass
 
+brower.close()
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -86,7 +103,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
-mailto_list=['184083376@qq.com', '379055439@qq.com']           #收件人(列表)
+mailto_list=['184083376@qq.com'] #, '379055439@qq.com']           #收件人(列表)
 mail_host="smtp.163.com"            #使用的邮箱的smtp服务器地址
 
 with open('mailuser.txt', 'r') as file_to_read:
@@ -130,44 +147,29 @@ http://vip.stock.finance.sina.com.cn/moneyflow/#zljlrepm\r\n\r\n'''
     messageContent = messageContent + linkString
     message.attach(MIMEText(messageContent, 'plain', 'utf-8'))
     
-    # 构造附件2，传送当前目录下的 test.txt 文件
-    att2 = MIMEText(open("/data/codes/stoker/resources/daily/filterpdSplitSortDateWithGapCount1-today.xls", 'rb').read(), 'base64', 'utf-8')
-    att2["Content-Type"] = 'application/octet-stream'
-    # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
-    att2["Content-Disposition"] = 'attachment; filename="Count1-till-today.xls"'
+    def buildAtt(filename, showfilename):
+        att = MIMEText(open(filename, 'rb').read(), 'base64', 'utf-8')
+        att["Content-Type"] = 'application/octet-stream'
+        # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
+        att["Content-Disposition"] = 'attachment; filename=' + showfilename
+        return att
+    
+    att1 = buildAtt("/data/codes/stoker/resources/daily/filterpdSplitSortDateWithGapCount1-today.xls", "Count1-till-today.xls")
+    att2 = buildAtt("/data/codes/stoker/resources/daily/filterpdSplitSortDateWithGap-today.xls", "score-today-by-date.xls")
+    att3 = buildAtt("/data/codes/stoker/resources/daily/filterpdSplitSortNameWithGap-today.xls", "score-today-by-name.xls")
+    att4 = buildAtt("/data/codes/stoker/resources/daily/score1-today.xls", "all-history-score.xls")
+    att5 = buildAtt("/data/codes/stoker/resources/daily/all-today.xls", "all-history-sort.xls")
+    
+    message.attach(att1)
     message.attach(att2)
-    
-    # 构造附件4，传送当前目录下的 test.txt 文件
-    att4 = MIMEText(open("/data/codes/stoker/resources/daily/filterpdSplitSortDateWithGap-today.xls", 'rb').read(), 'base64', 'utf-8')
-    att4["Content-Type"] = 'application/octet-stream'
-    # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
-    att4["Content-Disposition"] = 'attachment; filename="score-today-by-date.xls"'
+    message.attach(att3)
     message.attach(att4)
-    
-    # 构造附件5，传送当前目录下的 test.txt 文件
-    att5 = MIMEText(open("/data/codes/stoker/resources/daily/filterpdSplitSortNameWithGap-today.xls", 'rb').read(), 'base64', 'utf-8')
-    att5["Content-Type"] = 'application/octet-stream'
-    # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
-    att5["Content-Disposition"] = 'attachment; filename="score-today-by-name.xls"'
     message.attach(att5)
     
-    # 构造附件1，传送当前目录下的 test.txt 文件
-    att1 = MIMEText(open("/data/codes/stoker/resources/daily/score1-today.xls", 'rb').read(), 'base64', 'utf-8')
-    att1["Content-Type"] = 'application/octet-stream'
-    # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
-    att1["Content-Disposition"] = 'attachment; filename="all-history-score.xls"'
-    message.attach(att1)
-    
-    
-    
-    # 构造附件3，传送当前目录下的 test.txt 文件
-    att3 = MIMEText(open("/data/codes/stoker/resources/daily/all-today.xls", 'rb').read(), 'base64', 'utf-8')
-    att3["Content-Type"] = 'application/octet-stream'
-    # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
-    att3["Content-Disposition"] = 'attachment; filename="all-history-sort.xls"'
-    message.attach(att3)
-
-    
+    for codeitem in codeList:
+        att = buildAtt("/data/codes/stoker/pics/%s.jpg" % codeitem, "%s.jpg" % codeitem)
+        message.attach(att)
+        
 
     try:
         server = smtplib.SMTP()
