@@ -58,12 +58,12 @@ def cutPic(filename):
     元组里的元素分别是：（距离图片左边界距离x， 距离图片上边界距离y，距离图片左边界距离+裁剪框宽度x+w，距离图片上边界距离+裁剪框高度y+h）
     '''
     # 截取图片中一块宽和高都是250的
-    x = 100
-    y = 100
-    w = 250
-    h = 250
+    x = 280
+    y = 80
+    w = 680
+    h = 700
     region = im.crop((x, y, x+w, y+h))
-    region.save("./kpics/cut00")
+    region.save(filename)
 
 
 def saveGdrsPic(code):
@@ -76,7 +76,11 @@ def saveGdrsPic(code):
     print "got pic code %s" % code
     
 def saveKPic(code):
-    url = 'https://xueqiu.com/S/sh600352'
+    if code[0] == '6':
+        url = 'https://xueqiu.com/S/sh%s' % code
+    else:
+        url = 'https://xueqiu.com/S/sz%s' % code
+        
     xPath1Day = '//*[@id="app"]/div[2]/div[2]/div[6]/div[1]/div[1]/ul[1]/li[2]'
     global brower
     brower.get(url)
@@ -85,8 +89,9 @@ def saveKPic(code):
     brower.find_element_by_xpath(xPath1Day).click()
     time.sleep(3)
     brower.save_screenshot('./kpics/%s.jpg' % code)
-    #cutPic('./kpics/000001.png')
-    print "got pic code %s" % code
+    time.sleep(3)
+    cutPic('./kpics/%s.jpg' % code)
+    print "got k line pic %s" % code
 
 codeList = []
 for line in lines['name']:
@@ -95,7 +100,7 @@ for line in lines['name']:
         code = str(dfpe[dfpe['name']==line]['code'].get_values()[0]).zfill(6)
         codeList.append(code)
         saveGdrsPic(code)
-        #saveKPic(code)
+        saveKPic(code)
         
         if code[0] == '6':
             linkString += line + ": " + '<a href=" '+ baseUrl + "sh" + code + '">' + 'K线</a>' + "&nbsp"  
@@ -108,6 +113,7 @@ for line in lines['name']:
             linkString += '<a href=" ' + zjBaseUrl + "sz" + code + '">' + '主力净流入</a>' + "&nbsp"
         linkString += '<a href=" ' + baseGdrsUrl % code + '">' + '股东人数</a>'+ "<br/>"
         linkString += '<br><img src="cid:image-%s"></br>' % code
+        linkString += '<br><img src="cid:kline-%s"></br>' % code
     except:
         pass
 
@@ -234,10 +240,14 @@ all-history-sort.xls 包括所有个股的历史成交额排名<br/><br/>
     message.attach(att5)
     
     for codeitem in codeList:
-        #att = buildAtt("/data/codes/stoker/pics/%s.jpg" % codeitem, "%s.jpg" % codeitem)
-        att = buildImageAtt("/data/codes/stoker/pics/%s.jpg" % codeitem, "image-%s" % codeitem)
-        message.attach(att)
-        pass
+        try:
+            #att = buildAtt("/data/codes/stoker/pics/%s.jpg" % codeitem, "%s.jpg" % codeitem)
+            att = buildImageAtt("/data/codes/stoker/pics/%s.jpg" % codeitem, "image-%s" % codeitem)
+            attkline = buildImageAtt("/data/codes/stoker/kpics/%s.jpg" % codeitem, "kline-%s" % codeitem)
+            message.attach(att)
+            message.attach(attkline)
+        except Exception:
+            pass
     try:
         server = smtplib.SMTP()
         server.connect(mail_host)                            #连接服务器
