@@ -19,6 +19,7 @@ import xlwt
 import csv
 import uuid
 from selenium import webdriver
+import time
 #exit()
 #score.csv-->score.txt(today-sort.txt),score1.csv,(score.txt*)
 #score1.csv-->score1-today.xls*
@@ -38,20 +39,54 @@ todayScoreNewpd.to_csv("/data/codes/stoker/resources/daily/score.txt")
 filterpdSplitSortDateWithGap = pd.read_csv("/data/codes/stoker/resources/daily/filterpdSplitSortDateWithGap.csv")
 lines=filterpdSplitSortDateWithGap[filterpdSplitSortDateWithGap['date']==filterpdSplitSortDateWithGap['date'][0]]
 linkString=""
-baseUrl = "http://finance.china.com.cn/stock/quote/"
+#baseUrl = "http://finance.china.com.cn/stock/quote/"
+baseUrl = "https://xueqiu.com/S/"
 baseGdrsUrl = "http://stock.jrj.com.cn/share,%s,gdhs.shtml"
 zjBaseUrl = "http://vip.stock.finance.sina.com.cn/moneyflow/#!ssfx!"
+kUrl = "https://xueqiu.com/S/SH600352"
 nameString = ""
 brower = webdriver.PhantomJS()
+
+from PIL import Image
+def cutPic(filename):
+    im = Image.open(filename)
+    # 图片的宽度和高度
+    img_size = im.size
+    print("图片宽度和高度分别是{}".format(img_size))
+    '''
+    裁剪：传入一个元组作为参数
+    元组里的元素分别是：（距离图片左边界距离x， 距离图片上边界距离y，距离图片左边界距离+裁剪框宽度x+w，距离图片上边界距离+裁剪框高度y+h）
+    '''
+    # 截取图片中一块宽和高都是250的
+    x = 100
+    y = 100
+    w = 250
+    h = 250
+    region = im.crop((x, y, x+w, y+h))
+    region.save("./kpics/cut00")
+
 
 def saveGdrsPic(code):
     url = 'http://stock.jrj.com.cn/share,%s,gdhs.shtml' % code
     global brower
     brower.get(url)
     brower.maximize_window()
+    time.sleep(3)
     brower.save_screenshot('./pics/%s.jpg' % code)
     print "got pic code %s" % code
     
+def saveKPic(code):
+    url = 'https://xueqiu.com/S/sh600352'
+    xPath1Day = '//*[@id="app"]/div[2]/div[2]/div[6]/div[1]/div[1]/ul[1]/li[2]'
+    global brower
+    brower.get(url)
+    brower.maximize_window()
+    time.sleep(3)
+    brower.find_element_by_xpath(xPath1Day).click()
+    time.sleep(3)
+    brower.save_screenshot('./kpics/%s.jpg' % code)
+    #cutPic('./kpics/000001.png')
+    print "got pic code %s" % code
 
 codeList = []
 for line in lines['name']:
@@ -60,18 +95,24 @@ for line in lines['name']:
         code = str(dfpe[dfpe['name']==line]['code'].get_values()[0]).zfill(6)
         codeList.append(code)
         saveGdrsPic(code)
+        #saveKPic(code)
         
         if code[0] == '6':
-            linkString += line + ": " + baseUrl + "sh" + code + "\r\n"  
-            linkString += zjBaseUrl + "sh" + code + "\r\n"
+            linkString += line + ": " + '<a href=" '+ baseUrl + "sh" + code + '">' + 'K线</a>' + "&nbsp"  
+            #linkString += zjBaseUrl + "sh" + code + "\r\n" 
+            linkString += '<a href=" ' + zjBaseUrl + "sh" + code + '">' + '主力净流入</a>' + "&nbsp"
         else:
-            linkString += line + ": " + baseUrl + "sz" + code + "\r\n"
-            linkString += zjBaseUrl + "sz" + code + "\r\n"
-        linkString += baseGdrsUrl % code + "\r\n\r\n"
+            #linkString += line + ": " + baseUrl + "sz" + code + "\r\n"
+            linkString += line + ": " + '<a href=" '+ baseUrl + "sz" + code + '">' + 'K线</a>' + "&nbsp"  
+            #linkString += zjBaseUrl + "sz" + code + "\r\n"
+            linkString += '<a href=" ' + zjBaseUrl + "sz" + code + '">' + '主力净流入</a>' + "&nbsp"
+        linkString += '<a href=" ' + baseGdrsUrl % code + '">' + '股东人数</a>'+ "<br/>"
+        linkString += '<br><img src="cid:image-%s"></br>' % code
     except:
         pass
 
 brower.close()
+print linkString
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -103,7 +144,8 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
-mailto_list=['184083376@qq.com'] #, '379055439@qq.com']           #收件人(列表)
+from email.mime.image import MIMEImage
+mailto_list=['184083376@qq.com', '379055439@qq.com']           #收件人(列表)
 mail_host="smtp.163.com"            #使用的邮箱的smtp服务器地址
 
 with open('mailuser.txt', 'r') as file_to_read:
@@ -130,22 +172,39 @@ def send_mail(to_list,sub):
     messageContent = '''
 雪球趋势-今日榜单
 说明：
-score-today-by-date.xls 包括所有拥有评分资格的个股的历史评分-按日期排名
-score-today-by-name.xls 包括所有拥有评分资格的个股的历史评分-按名称排名    
-all-history-score.xls 包括所有个股的历史评分
+score-today-by-date.xls 包括所有拥有评分资格的个股的历史评分-按日期排名<br/>
+score-today-by-name.xls 包括所有拥有评分资格的个股的历史评分-按名称排名 <br/>   
+all-history-score.xls 包括所有个股的历史评分<br/>
 score-today.xls 包括按成交额排名的今日个股评分
-all-history-sort.xls 包括所有个股的历史成交额排名\r\n\r\n
-上证指数：
-http://finance.china.com.cn/stock/quote/sh000001/
-行业研究：
-http://app.finance.china.com.cn/report/list.php?type=1003
-http://data.eastmoney.com/report/hyyb.html
-http://stock.jrj.com.cn/yanbao/yanbaolist_hangye.shtml?dateInterval=30&orgCode=-1&xcfCode=-1
-资金榜单：
-http://vip.stock.finance.sina.com.cn/moneyflow/#zljlrepm\r\n\r\n'''
+all-history-sort.xls 包括所有个股的历史成交额排名<br/><br/>
+<a href="http://finance.china.com.cn/stock/quote/sh000001/">上证指数</a><br/>
+<a href="http://finance.china.com.cn/stock/quote/sh000001/">行业研究:</a>
+<a href="http://app.finance.china.com.cn/report/list.php?type=1003">中国财经网</a>
+<a href="http://data.eastmoney.com/report/hyyb.html">东方财富网</a>
+<a href="http://stock.jrj.com.cn/yanbao/yanbaolist_hangye.shtml?dateInterval=30&orgCode=-1&xcfCode=-1">金融界</a>
+<br/>
+<a href="http://vip.stock.finance.sina.com.cn/moneyflow/#zljlrepm">资金榜单</a>
+<br/>'''
 
     messageContent = messageContent + linkString
-    message.attach(MIMEText(messageContent, 'plain', 'utf-8'))
+    #message.attach(MIMEText(messageContent, 'plain', 'utf-8'))
+    
+    html =  """
+    <html> 
+      <head>今日异动个股：</head> 
+      <body> 
+        <p>
+           %s
+        </p>
+        <p>
+           %s 
+        </p> 
+      </body> 
+    </html> 
+    """ % (messageContent, linkString)
+    
+    htm = MIMEText(html,'html','utf-8') 
+    message.attach(htm)
     
     def buildAtt(filename, showfilename):
         att = MIMEText(open(filename, 'rb').read(), 'base64', 'utf-8')
@@ -154,11 +213,19 @@ http://vip.stock.finance.sina.com.cn/moneyflow/#zljlrepm\r\n\r\n'''
         att["Content-Disposition"] = 'attachment; filename=' + showfilename
         return att
     
+    def buildImageAtt(filename, showfilename):
+        print showfilename
+        att = MIMEImage(open(filename, 'rb').read())
+        att.add_header('Content-ID','<' + showfilename + '>')
+        return att
+    
+    
     att1 = buildAtt("/data/codes/stoker/resources/daily/filterpdSplitSortDateWithGapCount1-today.xls", "Count1-till-today.xls")
     att2 = buildAtt("/data/codes/stoker/resources/daily/filterpdSplitSortDateWithGap-today.xls", "score-today-by-date.xls")
     att3 = buildAtt("/data/codes/stoker/resources/daily/filterpdSplitSortNameWithGap-today.xls", "score-today-by-name.xls")
     att4 = buildAtt("/data/codes/stoker/resources/daily/score1-today.xls", "all-history-score.xls")
     att5 = buildAtt("/data/codes/stoker/resources/daily/all-today.xls", "all-history-sort.xls")
+    
     
     message.attach(att1)
     message.attach(att2)
@@ -167,10 +234,10 @@ http://vip.stock.finance.sina.com.cn/moneyflow/#zljlrepm\r\n\r\n'''
     message.attach(att5)
     
     for codeitem in codeList:
-        att = buildAtt("/data/codes/stoker/pics/%s.jpg" % codeitem, "%s.jpg" % codeitem)
+        #att = buildAtt("/data/codes/stoker/pics/%s.jpg" % codeitem, "%s.jpg" % codeitem)
+        att = buildImageAtt("/data/codes/stoker/pics/%s.jpg" % codeitem, "image-%s" % codeitem)
         message.attach(att)
-        
-
+        pass
     try:
         server = smtplib.SMTP()
         server.connect(mail_host)                            #连接服务器
