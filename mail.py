@@ -20,6 +20,7 @@ import csv
 import uuid
 from selenium import webdriver
 import time
+from datetime import datetime
 #exit()
 #score.csv-->score.txt(today-sort.txt),score1.csv,(score.txt*)
 #score1.csv-->score1-today.xls*
@@ -43,7 +44,8 @@ linkString=""
 baseUrl = "https://xueqiu.com/S/"
 baseGdrsUrl = "http://stock.jrj.com.cn/share,%s,gdhs.shtml"
 zjBaseUrl = "http://vip.stock.finance.sina.com.cn/moneyflow/#!ssfx!"
-kUrl = "https://xueqiu.com/S/SH600352"
+zjbdUrl = "http://vip.stock.finance.sina.com.cn/moneyflow/#zljlrepm"
+
 nameString = ""
 brower = webdriver.PhantomJS()
 
@@ -75,6 +77,15 @@ def saveGdrsPic(code):
     brower.save_screenshot('./pics/%s.jpg' % code)
     print "got pic code %s" % code
     
+def savePic(url, filename):
+    global brower
+    brower.get(url)
+    brower.maximize_window()
+    time.sleep(3)
+    brower.save_screenshot('./pics/%s.png' % filename)
+    print "got pic filename %s" % filename
+    
+    
 def saveKPic(code):
     if code[0] == '6':
         url = 'https://xueqiu.com/S/sh%s' % code
@@ -92,8 +103,12 @@ def saveKPic(code):
     time.sleep(3)
     cutPic('./kpics/%s.jpg' % code)
     print "got k line pic %s" % code
-
+todayStr = str(datetime.today())[:10]
+savePic(zjbdUrl, 'zjbd-%s' % todayStr)
 codeList = []
+for line in lines['name']:
+    print line
+    
 for line in lines['name']:
     try:
         nameString += line + ','
@@ -113,12 +128,12 @@ for line in lines['name']:
             linkString += '<a href=" ' + zjBaseUrl + "sz" + code + '">' + '主力净流入</a>' + "&nbsp"
         linkString += '<a href=" ' + baseGdrsUrl % code + '">' + '股东人数</a>'+ "<br/>"
         linkString += '<br><img src="cid:image-%s"></br>' % code
-        linkString += '<br><img src="cid:kline-%s"></br>' % code
+        linkString += '<br><img src="cid:kline-%s"></br></br></br>' % code
     except:
         pass
 
-brower.close()
-print linkString
+
+#print linkString
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -143,15 +158,15 @@ def csv_to_xls(filename):
     myexcel.save(excel_filename)
     return excel_filename
 
-csv_to_xls("/data/codes/stoker/resources/daily/all.csv")
-csv_to_xls("/data/codes/stoker/resources/daily/score1.csv")
+#csv_to_xls("/data/codes/stoker/resources/daily/all.csv")
+#csv_to_xls("/data/codes/stoker/resources/daily/score1.csv")
 csv_to_xls("/data/codes/stoker/resources/daily/score.txt")
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
 from email.mime.image import MIMEImage
-mailto_list=['184083376@qq.com', '379055439@qq.com']           #收件人(列表)
+mailto_list=['184083376@qq.com', '379055439@qq.com', '270424167@qq.com']           #收件人(列表)
 mail_host="smtp.163.com"            #使用的邮箱的smtp服务器地址
 
 with open('mailuser.txt', 'r') as file_to_read:
@@ -190,9 +205,9 @@ all-history-sort.xls 包括所有个股的历史成交额排名<br/><br/>
 <a href="http://stock.jrj.com.cn/yanbao/yanbaolist_hangye.shtml?dateInterval=30&orgCode=-1&xcfCode=-1">金融界</a>
 <br/>
 <a href="http://vip.stock.finance.sina.com.cn/moneyflow/#zljlrepm">资金榜单</a>
+<br><img src="cid:image-zjbd"></br>'
 <br/>'''
 
-    messageContent = messageContent + linkString
     #message.attach(MIMEText(messageContent, 'plain', 'utf-8'))
     
     html =  """
@@ -239,6 +254,9 @@ all-history-sort.xls 包括所有个股的历史成交额排名<br/><br/>
     message.attach(att4)
     message.attach(att5)
     
+    attzjbd = buildImageAtt("/data/codes/stoker/pics/zjbd-%s.png" % todayStr, "image-zjbd")
+    message.attach(attzjbd)
+    
     for codeitem in codeList:
         try:
             #att = buildAtt("/data/codes/stoker/pics/%s.jpg" % codeitem, "%s.jpg" % codeitem)
@@ -263,6 +281,8 @@ for i in range(1):                             #发送五封，不过会被拦�
         print "done!"
     else:
         print "failed!"
+        
+brower.close()
 #todayScoreText = todayScoreText.
 #commands.getstatusoutput('/data/codes/stoker/resources/daily/sending.sh')
 #os.popen('echo "This is with attach" | mail -s "subject" 184083376@qq.com -A /data/codes/stoker/resources/daily/score.txt')
