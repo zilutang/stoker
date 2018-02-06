@@ -193,6 +193,7 @@ def send_mail(to_list,sub):
     messageContent = '''
 雪球趋势-今日榜单
 说明：
+当日下跌的个股须忽略<br/>
 score-today-by-date.xls 包括所有拥有评分资格的个股的历史评分-按日期排名<br/>
 score-today-by-name.xls 包括所有拥有评分资格的个股的历史评分-按名称排名 <br/>   
 all-history-score.xls 包括所有个股的历史评分<br/>
