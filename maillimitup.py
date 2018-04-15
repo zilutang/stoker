@@ -15,13 +15,6 @@ from datetime import datetime
 
 # prepare basic info
 import tushare as ts
-#industryClassified = ts.get_industry_classified()
-
-#import tushare as ts
-#conceptClassified = ts.get_concept_classified()
-
-#import tushare as ts
-#areaClassified = ts.get_area_classified()
 
 baseinfoFileName='baseinfo20180415.csv'
 lowerBoundNmc = 80
@@ -29,7 +22,7 @@ upperBoundNmc = 260
 
 import tushare as ts
 
-#todayAll = ts.get_today_all()
+todayAll = ts.get_today_all()
 todayAllLimitUp = todayAll[todayAll['changepercent'] > 9.6]
 
 baseInfo = pd.read_csv(baseinfoFileName, encoding='gbk')
@@ -117,7 +110,6 @@ def saveTraductionPic(code):
     
     
 linkString=""
-#baseUrl = "http://finance.china.com.cn/stock/quote/"
 baseUrl = "https://xueqiu.com/S/"
 baseGdrsUrl = "http://stock.jrj.com.cn/share,%s,gdhs.shtml"
 zjBaseUrl = "http://vip.stock.finance.sina.com.cn/moneyflow/#!ssfx!"
@@ -125,7 +117,7 @@ zjbdUrl = "http://vip.stock.finance.sina.com.cn/moneyflow/#zljlrepm"
 nameString = ""
 
 todayStr = str(datetime.today())[:10]
-#savePic(zjbdUrl, 'zjbd-%s' % todayStr)
+savePic(zjbdUrl, 'zjbd-%s' % todayStr)
 codeList = []
 
 print todayAllLimitUpWithBaseInfoSimpleSortIndustory
@@ -140,9 +132,9 @@ for line in todayAllLimitUpWithBaseInfoSimpleSlice.name.tolist():
         nameString += line + ','
         code = str(todayAllLimitUpWithBaseInfoSimpleSlice[todayAllLimitUpWithBaseInfoSimpleSlice['name']==line]['code'].get_values()[0]).zfill(6)
         codeList.append(code)
-        #saveGdrsPic(code)
-        #saveKPic(code)
-        #saveTraductionPic(code)
+        saveGdrsPic(code)
+        saveKPic(code)
+        saveTraductionPic(code)
         print 'code: ' + code
         print code[0]
         
