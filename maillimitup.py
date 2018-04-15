@@ -148,6 +148,7 @@ for line in todayAllLimitUpWithBaseInfoSimpleSlice.name.tolist():
         linkString += '<a href=" ' + baseGdrsUrl % code + '">' + '股东人数</a>'+ "<br/>"
         linkString += '<br><img src="cid:image-%s"></br>' % code
         linkString += '<br><img src="cid:kline-%s"></br></br></br>' % code
+        linkString += '<br><img src="cid:Tline-%s"></br></br></br>' % code
     except:
         print 'exception'
         pass
