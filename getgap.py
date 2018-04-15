@@ -16,7 +16,7 @@ import commands
 from libs import *
 
 dfpe = ts.get_stock_basics()[['name', 'pe']]
-pdraw = pd.read_csv('./resources/daily/allraw.csv', sep='\t')
+pdraw = pd.read_csv('/data/codes/stoker/resources/daily/allraw.csv', sep='\t')
 dfpe.to_csv('./resources/daily/dfpe.csv')
 filterpdSplitSortNameLastYear = "/data/codes/stoker/resources/daily/2016/filterpdSplitSortName.csv"
 pdLastYear = pd.read_csv(filterpdSplitSortNameLastYear)
