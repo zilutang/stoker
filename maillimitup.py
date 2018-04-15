@@ -178,7 +178,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
 from email.mime.image import MIMEImage
-mailto_list=['184083376@qq.com']           #收件人(列表)
+mailto_list=['184083376@qq.com', '379055439@qq.com', '270424167@qq.com']           #收件人(列表)
 mail_host="smtp.163.com"            #使用的邮箱的smtp服务器地址
 
 with open('mailuser.txt', 'r') as file_to_read:

@@ -1,8 +1,9 @@
-/opt/anaconda2/anaconda/bin/python /data/codes/stoker/updateDaily.py
-/opt/anaconda2/anaconda/bin/python /data/codes/stoker/scoring.py
-/opt/anaconda2/anaconda/bin/python /data/codes/stoker/score-history.py
-/opt/anaconda2/anaconda/bin/python /data/codes/stoker/getgap.py
-/opt/anaconda2/anaconda/bin/python /data/codes/stoker/mail.py
+#/opt/anaconda2/anaconda/bin/python /data/codes/stoker/updateDaily.py
+#/opt/anaconda2/anaconda/bin/python /data/codes/stoker/scoring.py
+#/opt/anaconda2/anaconda/bin/python /data/codes/stoker/score-history.py
+#/opt/anaconda2/anaconda/bin/python /data/codes/stoker/getgap.py
+#/opt/anaconda2/anaconda/bin/python /data/codes/stoker/mail.py
+/opt/anaconda2/anaconda/bin/python /data/codes/stoker/maillimitup.py
 
 #cd /data/codes/stoker/
 
