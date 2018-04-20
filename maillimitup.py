@@ -24,7 +24,7 @@ import tushare as ts
 
 todayAll = ts.get_today_all()
 todayAllLimitUp = todayAll[todayAll['changepercent'] > 9.6]
-
+print "完成数据更新"
 baseInfo = pd.read_csv(baseinfoFileName, encoding='gbk')
 todayAllLimitUpWithBaseInfo = todayAllLimitUp.merge(baseInfo)
 todayAllLimitUpWithBaseInfo.nmc = todayAllLimitUpWithBaseInfo.nmc.apply(lambda x: round(x/10000, 1))
@@ -196,11 +196,17 @@ def send_mail(to_list,sub):
     #2.http://stock.jrj.com.cn/share,002247,gdhs.shtml
     #3.http://vip.stock.finance.sina.com.cn/moneyflow/#!ssfx!sz000725
     messageContent = '''
-雪球趋势-今日榜单<br/>
+行业板块效应整理榜单<br/>
+股票代码 股票名称 流通市值 所属行业 地区<br/>
 %s<br/>
+<br/>
+地区板块效应整理榜单<br/>
+股票代码 股票名称 流通市值 所属行业 地区<br/>
 %s<br/>
 说明：
-此为短线选股名单<br/>
+此为短线选股名单，在股市下跌后的反弹中或企稳趋势中，及时判断跟进拉升牛股在短期内获利。
+同时也能够发现有中线潜力的牛股<br/>
+<br/>
 
 <a href="http://finance.china.com.cn/stock/quote/sh000001/">上证指数</a><br/>
 <a href="http://finance.china.com.cn/stock/quote/sh000001/">行业研究:</a>
@@ -222,6 +228,7 @@ def send_mail(to_list,sub):
            %s
         </p>
         <p>
+        以下个股为精选牛股，需要结合技术面自行判断买入时机
            %s 
         </p> 
       </body> 
