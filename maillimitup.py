@@ -1,4 +1,3 @@
-#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
 
@@ -12,17 +11,20 @@ import uuid
 from selenium import webdriver
 import time
 from datetime import datetime
+import sqlite3 as lite
+from pandas.io import sql
+import pandas as pd
 
 # prepare basic info
 import tushare as ts
 
-baseinfoFileName='baseinfo20180415.csv'
+baseinfoFileName='/data/codes/stoker/baseinfo20180415.csv'
 lowerBoundNmc = 80
 upperBoundNmc = 260
 
 import tushare as ts
 
-todayAll = ts.get_today_all()
+todayAll = ts.get_today_all() #pd.read_pickle('todayAll.pickle') 
 todayAllLimitUp = todayAll[todayAll['changepercent'] > 9.6]
 print "完成数据更新"
 baseInfo = pd.read_csv(baseinfoFileName, encoding='gbk')
@@ -117,8 +119,9 @@ zjbdUrl = "http://vip.stock.finance.sina.com.cn/moneyflow/#zljlrepm"
 nameString = ""
 
 todayStr = str(datetime.today())[:10]
-savePic(zjbdUrl, 'zjbd-%s' % todayStr)
+#savePic(zjbdUrl, 'zjbd-%s' % todayStr)
 codeList = []
+codeListAll = todayAllLimitUpWithBaseInfoSimpleSortIndustory.code.tolist()
 
 print todayAllLimitUpWithBaseInfoSimpleSortIndustory
 print todayAllLimitUpWithBaseInfoSimpleSortCity
@@ -132,9 +135,9 @@ for line in todayAllLimitUpWithBaseInfoSimpleSlice.name.tolist():
         nameString += line + ','
         code = str(todayAllLimitUpWithBaseInfoSimpleSlice[todayAllLimitUpWithBaseInfoSimpleSlice['name']==line]['code'].get_values()[0]).zfill(6)
         codeList.append(code)
-        saveGdrsPic(code)
-        saveKPic(code)
-        saveTraductionPic(code)
+        #saveGdrsPic(code)
+        #saveKPic(code)
+        #saveTraductionPic(code)
         print 'code: ' + code
         print code[0]
         
@@ -152,6 +155,16 @@ for line in todayAllLimitUpWithBaseInfoSimpleSlice.name.tolist():
     except:
         print 'exception'
         pass
+
+
+result_realtime_quotes = ts.get_realtime_quotes(codeListAll)
+result_broad_table = todayAllLimitUpWithBaseInfo.merge(result_realtime_quotes, on='code')
+result_broad_table['buyall'] = result_broad_table.price.apply(lambda x: float(x)) * result_broad_table.b1_v.apply(lambda y: float(y)) / 10000
+result_broad_table['buymnc'] = result_broad_table['buyall'].apply(lambda x: float(x)) / result_broad_table.nmc.apply(lambda x: float(x))
+result_broad_table['buype'] = result_broad_table['buyall'].apply(lambda x: float(x)) / result_broad_table.per.apply(lambda x: float(x))
+
+cnx = lite.connect('/data/sqlite-tools-osx-x86-3230100/projects/test.db')
+sql.to_sql(result_broad_table, name='table1', con=cnx, if_exists='append',index=True)
 
 linesOftodayAllLimitUpWithBaseInfoSimpleSortIndustory = ''
 for i in range(len(todayAllLimitUpWithBaseInfoSimpleSortIndustory)):
@@ -275,11 +288,70 @@ def send_mail(to_list,sub):
     except Exception, e:
         print str(e)
         return False
+    
+'''
 for i in range(1):                             #发送五封，不过会被拦截的。。。
     if send_mail(mailto_list,todayStr + nameString):  #邮件主题和邮件内容
         print "done!"
     else:
         print "failed!"
-        
+'''
 brower.close()
 
+
+'''
+CREATE TABLE test.table1(
+code string,
+name_x string,
+changepercent string,
+trade string,
+open_x string,
+high_x string,
+low_x string,
+settlement string,
+volume_x string,
+turnoverratio string,
+amount_x string,
+per string,
+pb string,
+mktcap string,
+nmc string,
+industory string,
+city string,
+name_y string,
+open_y string,
+pre_close string,
+price string,
+high_y string,
+low_y string,
+bid string,
+ask string,
+volume_y string,
+amount_y string,
+b1_v string,
+b1_p string,
+b2_v string,
+b2_p string,
+b3_v string,
+b3_p string,
+b4_v string,
+b4_p string,
+b5_v string,
+b5_p string,
+a1_v string,
+a1_p string,
+a2_v string,
+a2_p string,
+a3_v string,
+a3_p string,
+a4_v string,
+a4_p string,
+a5_v string,
+a5_p string,
+date string,
+time string,
+buyall string,
+buymnc string,
+buype string
+);
+'''
