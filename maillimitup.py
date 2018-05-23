@@ -300,6 +300,21 @@ brower.close()
 
 
 '''
+select code,name_x,per,nmc,industory,city,price,date,buyall,buymnc from table1;
+
+select code,name_x,per,nmc,industory,city,price,date,buyall,buymnc from table1 where industory = '汽车配件' order by buyall desc;
+'''
+
+'''
+格式化：
+.header on
+.mode column
+.timer on
+
+
+'''
+
+'''
 CREATE TABLE test.table1(
 code string,
 name_x string,
